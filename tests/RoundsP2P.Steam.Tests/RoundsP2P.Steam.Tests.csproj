@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <ProjectReference Include="../../src/RoundsP2P.Core/RoundsP2P.Core.csproj" />
+    <Reference Include="com.rlabrecque.steamworks.net" HintPath="$(GameManagedDir)\com.rlabrecque.steamworks.net.dll" />
+    <Reference Include="PhotonRealtime" HintPath="$(GameManagedDir)\PhotonRealtime.dll" />
+    <Reference Include="Photon3Unity3D" HintPath="$(GameManagedDir)\Photon3Unity3D.dll" />
+    <Reference Include="UnityEngine" HintPath="$(GameManagedDir)\UnityEngine.dll" />
+    <Reference Include="UnityEngine.CoreModule" HintPath="$(GameManagedDir)\UnityEngine.CoreModule.dll" />
+    <Compile Include="../../src/RoundsP2P.Plugin/SteamDatagramTransport.cs" Link="Production/SteamDatagramTransport.cs" Condition="Exists('../../src/RoundsP2P.Plugin/SteamDatagramTransport.cs')" />
+    <Compile Include="../RoundsP2P.Network.Tests/PhotonSession.cs" Link="Fixtures/PhotonSession.cs" />
+    <AssemblyMetadata Include="SteamNativeLibrary" Value="$(GameDir)\ROUNDS_Data\Plugins\x86_64\steam_api64.dll" />
+  </ItemGroup>
+</Project>

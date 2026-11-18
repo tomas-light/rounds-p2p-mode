@@ -1,0 +1,9 @@
+{
+  "name": "RoundsP2PPrototype",
+  "version_number": "0.2.3",
+  "website_url": "",
+  "description": "Standalone ROUNDS Steam lobby and network prototype with a server on one player's PC.",
+  "dependencies": [
+    "BepInEx-BepInExPack_ROUNDS-5.4.1901"
+  ]
+}

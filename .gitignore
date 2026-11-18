@@ -1,0 +1,13 @@
+**/bin/
+**/obj/
+.cache/
+.tools/
+.research/
+.runtime/
+artifacts/
+TestResults/
+.omx/
+.idea/
+*.user
+*.suo
+local.props

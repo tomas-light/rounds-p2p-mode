@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "dependencies": {
+    ".NETStandard,Version=v2.1": {
+      "roundsp2p.core": {
+        "type": "Project"
+      }
+    }
+  }
+}
