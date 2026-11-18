@@ -4,7 +4,7 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-if (-not $PackagePath) { $PackagePath = Join-Path $root 'artifacts\RoundsP2PPrototype-1.0.0.zip' }
+if (-not $PackagePath) { $PackagePath = Join-Path $root 'artifacts\RoundsP2P-1.0.0.zip' }
 $PackagePath = [IO.Path]::GetFullPath($PackagePath)
 $profilesRoot = [IO.Path]::GetFullPath((Join-Path $env:APPDATA 'r2modmanPlus-local\ROUNDS\profiles'))
 $target = [IO.Path]::GetFullPath((Join-Path $profilesRoot $ProfileName))
@@ -19,7 +19,7 @@ if ($records.Count -eq 0) { throw 'Profile mods.yml does not contain the expecte
 $retainedRecords = @()
 foreach ($record in $records) {
     $name = [regex]::Match($record.Value, '(?m)^  name: (.+)\r?$').Groups[1].Value.Trim()
-    if ($name -notin @('BepInEx-BepInExPack_ROUNDS', 'Local-RoundsP2PPrototype')) { throw "Unexpected mod in dedicated profile: $name" }
+    if ($name -notin @('BepInEx-BepInExPack_ROUNDS', 'Local-RoundsP2P', 'Local-RoundsP2PPrototype')) { throw "Unexpected mod in dedicated profile: $name" }
     if ($name -eq 'BepInEx-BepInExPack_ROUNDS') { $retainedRecords += $record.Value.TrimEnd() }
 }
 if ($retainedRecords.Count -ne 1) { throw 'Expected exactly one BepInEx loader record.' }
@@ -52,7 +52,7 @@ try {
     foreach ($name in $allowedEntries) { if (-not $foundEntries.ContainsKey($name)) { throw "Missing package entry: $name" } }
     $manifestReader = [IO.StreamReader]::new($foundEntries['manifest.json'].Open())
     try { $manifest = $manifestReader.ReadToEnd() | ConvertFrom-Json } finally { $manifestReader.Dispose() }
-    if ($manifest.name -ne 'RoundsP2PPrototype' -or $manifest.version_number -ne '1.0.0' -or
+    if ($manifest.name -ne 'RoundsP2P' -or $manifest.version_number -ne '1.0.0' -or
         @($manifest.dependencies).Count -ne 1 -or $manifest.dependencies[0] -ne 'BepInEx-BepInExPack_ROUNDS-5.4.1901') { throw 'Unexpected package manifest.' }
     # Stage and validate the full package before changing the r2modman profile.
     $staging = Join-Path $root ('.cache\install-' + [Guid]::NewGuid().ToString('N'))
@@ -79,7 +79,7 @@ for ($index = 0; $index -lt $pngHeader.Length; $index++) {
 # All names are fixed, and unrelated packages/versions are left untouched.
 $gameRoot = [IO.Path]::GetFullPath((Join-Path $env:APPDATA 'r2modmanPlus-local\ROUNDS'))
 $cacheRoot = [IO.Path]::GetFullPath((Join-Path $gameRoot 'cache'))
-$ownCacheRoot = [IO.Path]::GetFullPath((Join-Path $cacheRoot 'Local-RoundsP2PPrototype'))
+$ownCacheRoot = [IO.Path]::GetFullPath((Join-Path $cacheRoot 'Local-RoundsP2P'))
 $packageCache = [IO.Path]::GetFullPath((Join-Path $ownCacheRoot '1.0.0'))
 if ((Split-Path -Parent $cacheRoot) -ne $gameRoot -or (Split-Path -Parent $ownCacheRoot) -ne $cacheRoot -or
     (Split-Path -Parent $packageCache) -ne $ownCacheRoot) { throw 'Package cache must remain inside the fixed ROUNDS cache directory.' }
@@ -101,11 +101,11 @@ foreach ($relative in @('RoundsP2P.dll', 'RoundsP2P.Core.dll', 'luxon\luxon_serv
 $installedAt = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
 $localRecord = @"
 - manifestVersion: 1
-  name: Local-RoundsP2PPrototype
+  name: Local-RoundsP2P
   authorName: Local
   websiteUrl: ''
-  displayName: ROUNDS P2P Prototype
-  description: Standalone Steam lobby and network prototype with bundled Luxon Server.
+  displayName: ROUNDS P2P Mode
+  description: Peer-to-peer 1v1 with Steam lobbies, ping display, a win counter and rematch fixes.
   gameVersion: '0'
   networkMode: both
   packageType: other
@@ -124,5 +124,5 @@ $localRecord = @"
   onlineSource: false
 "@
 ($retainedRecords[0] + "`n" + $localRecord.TrimEnd() + "`n") | Set-Content -LiteralPath $modsPath -Encoding utf8
-Write-Output "Installed ROUNDS P2P Prototype 1.0.0 into: $target"
+Write-Output "Installed ROUNDS P2P Mode 1.0.0 into: $target"
 Write-Output 'Launch this profile in r2modman, then choose Online -> Create lobby -> Invite friend.'

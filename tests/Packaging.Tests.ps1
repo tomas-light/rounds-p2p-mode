@@ -1,9 +1,9 @@
 param([string] $PackagePath)
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-if (-not $PackagePath) { $PackagePath = Join-Path $root 'artifacts\RoundsP2PPrototype-1.0.0.zip' }
+if (-not $PackagePath) { $PackagePath = Join-Path $root 'artifacts\RoundsP2P-1.0.0.zip' }
 $PackagePath = [IO.Path]::GetFullPath($PackagePath)
-if (-not (Test-Path -LiteralPath $PackagePath -PathType Leaf)) { throw 'Build the prototype ZIP before running packaging tests.' }
+if (-not (Test-Path -LiteralPath $PackagePath -PathType Leaf)) { throw 'Build the ZIP before running packaging tests.' }
 $installer = Join-Path $root 'scripts\install-profile.ps1'
 $fixture = Join-Path $root ('.cache\packaging-tests\' + [Guid]::NewGuid().ToString('N'))
 $fakeAppData = Join-Path $fixture 'AppData'
@@ -12,7 +12,7 @@ $coreDirectory = Join-Path $profile 'BepInEx\core'
 $pluginsDirectory = Join-Path $profile 'BepInEx\plugins'
 $modsPath = Join-Path $profile 'mods.yml'
 $cacheRoot = Join-Path $fakeAppData 'r2modmanPlus-local\ROUNDS\cache'
-$packageCache = Join-Path $cacheRoot 'Local-RoundsP2PPrototype\1.0.0'
+$packageCache = Join-Path $cacheRoot 'Local-RoundsP2P\1.0.0'
 $unrelatedCache = Join-Path $cacheRoot 'UnrelatedPackage\1.0.0\sentinel.txt'
 New-Item -ItemType Directory -Path $coreDirectory, $pluginsDirectory, (Join-Path $profile 'BepInEx\patchers') -Force | Out-Null
 New-Item -ItemType Directory -Path (Split-Path -Parent $unrelatedCache) -Force | Out-Null
@@ -69,24 +69,26 @@ try {
     # All installer writes are redirected to this workspace-owned fixture.
     $env:APPDATA = $fakeAppData
     & $installer -PackagePath $PackagePath
-    # Simulate the existing 0.2.3 profile before upgrading to 1.0.0.
+    # Simulate the previous prototype name and version before upgrading to the release.
     $previousMods = Get-Content -LiteralPath $modsPath -Raw
-    $previousRecord = [regex]::Match($previousMods, '(?ms)^- manifestVersion: 1\r?\n  name: Local-RoundsP2PPrototype\r?\n.*?(?=^- manifestVersion: 1|\z)').Value
+    $previousRecord = [regex]::Match($previousMods, '(?ms)^- manifestVersion: 1\r?\n  name: Local-RoundsP2P\r?\n.*?(?=^- manifestVersion: 1|\z)').Value
     if (-not $previousRecord) { throw 'Initial install did not write a local package record.' }
-    $previousMods.Replace($previousRecord, $previousRecord.Replace('    major: 1', '    major: 0').Replace('    minor: 0', '    minor: 2').Replace('    patch: 0', '    patch: 3')) |
+    $previousMods.Replace($previousRecord, $previousRecord.Replace('Local-RoundsP2P', 'Local-RoundsP2PPrototype').Replace('    major: 1', '    major: 0').Replace('    minor: 0', '    minor: 2').Replace('    patch: 0', '    patch: 3')) |
         Set-Content -LiteralPath $modsPath -Encoding utf8
     & $installer -PackagePath $PackagePath
     & $installer -PackagePath $PackagePath
     $mods = Get-Content -LiteralPath $modsPath -Raw
-    if ([regex]::Matches($mods, '(?m)^  name: Local-RoundsP2PPrototype\r?$').Count -ne 1) { throw 'Reinstall duplicated the local package record.' }
+    if ([regex]::Matches($mods, '(?m)^  name: Local-RoundsP2P\r?$').Count -ne 1) { throw 'Reinstall duplicated the local package record.' }
+    if ($mods -match '(?m)^  name: Local-RoundsP2PPrototype\r?$') { throw 'Upgrade retained the old prototype package record.' }
     if ([regex]::Matches($mods, '(?m)^  name: BepInEx-BepInExPack_ROUNDS\r?$').Count -ne 1) { throw 'Reinstall changed the loader record count.' }
-    $ownRecord = [regex]::Match($mods, '(?ms)^- manifestVersion: 1\r?\n  name: Local-RoundsP2PPrototype\r?\n.*?(?=^- manifestVersion: 1|\z)').Value
+    $ownRecord = [regex]::Match($mods, '(?ms)^- manifestVersion: 1\r?\n  name: Local-RoundsP2P\r?\n.*?(?=^- manifestVersion: 1|\z)').Value
+    if ($ownRecord -notmatch '(?m)^  displayName: ROUNDS P2P Mode\r?$') { throw 'Installed package display name differs from the release name.' }
     if ($ownRecord -notmatch '(?m)^    major: 1\r?$' -or $ownRecord -notmatch '(?m)^    minor: 0\r?$' -or $ownRecord -notmatch '(?m)^    patch: 0\r?$') {
         throw 'Installed local package metadata does not contain version 1.0.0.'
     }
     $dlls = @(Get-ChildItem -LiteralPath $pluginsDirectory -Filter '*.dll' -File -Recurse)
     if ($dlls.Count -ne 2 -or @($dlls.Name | Where-Object { $_ -notin @('RoundsP2P.dll', 'RoundsP2P.Core.dll') }).Count -ne 0) {
-        throw 'Installed package does not contain exactly the two prototype plugin DLLs.'
+        throw 'Installed package does not contain exactly the two plugin DLLs.'
     }
     $cachedIcon = Join-Path $packageCache 'icon.png'
     if (-not (Test-Path -LiteralPath $cachedIcon -PathType Leaf)) { throw 'Package icon was not installed in the r2modman cache.' }
@@ -106,7 +108,7 @@ try {
     if ($mods -match 'data:image/|base64,') { throw 'Package metadata must not embed the icon as base64.' }
     if ((Get-FileHash -LiteralPath (Join-Path $packageCache 'LICENSE') -Algorithm SHA256).Hash -ne
         (Get-FileHash -LiteralPath (Join-Path $root 'LICENSE') -Algorithm SHA256).Hash) { throw 'Cached MIT license differs from the project license.' }
-    Write-Output 'PASS: initial install, 0.2.3 metadata upgrade and idempotent reinstall preserve version 1.0.0, one local record and exactly two plugin DLLs.'
+    Write-Output 'PASS: initial install, prototype name/version migration and idempotent reinstall preserve version 1.0.0, one release record and exactly two plugin DLLs.'
     Write-Output 'PASS: a valid 256x256 PNG and full package are cached for r2modman; unrelated cached packages are preserved.'
 
     $otherDirectory = Join-Path $pluginsDirectory 'Other'

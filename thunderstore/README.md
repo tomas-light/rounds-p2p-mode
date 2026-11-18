@@ -22,10 +22,10 @@
 
 Сделайте это оба:
 
-1. Откройте **r2modman** — программу для установки модов. Создайте в ней новый профиль для ROUNDS. Другие моды в него не добавляйте.
-2. Установите в этот профиль **BepInExPack_ROUNDS 5.4.1901**. Он нужен для запуска мода.
-3. Скачайте ZIP-архив с этим модом. В настройках профиля нажмите **Import local mod** и выберите архив. У вас обоих должна быть одна версия мода.
-4. Запустите Steam, затем игру через r2modman.
+1. Откройте **r2modman** или **Thunderstore Mod Manager**, выберите **ROUNDS** и создайте новый профиль. Другие моды в него не добавляйте.
+2. В списке доступных модов найдите **RoundsP2P** (ROUNDS P2P Mode) и установите его. Нужный для запуска **BepInExPack_ROUNDS 5.4.1901** установится автоматически.
+3. Убедитесь, что у вас обоих установлена одна версия мода.
+4. Запустите Steam, затем модифицированную игру через менеджер модов.
 
 Когда вы оба уже в игре, один выбирает **Онлайн → Создать лобби → Пригласить друга**. Второй принимает приглашение в Steam — и можно играть.
 
@@ -51,10 +51,10 @@ This mod lets you play 1v1 with less network delay (lower ping between players).
 
 Both of you need to do this:
 
-1. Open **r2modman**, the app for installing mods. Make a new profile for ROUNDS. Don’t add other mods to it.
-2. Install **BepInExPack_ROUNDS 5.4.1901** in that profile. You need it to run the mod.
-3. Download this mod’s ZIP file. In the profile settings, select **Import local mod** and choose the ZIP. Make sure you both have the same mod version.
-4. Start Steam, then launch the game through r2modman.
+1. Open **r2modman** or **Thunderstore Mod Manager**, select **ROUNDS**, and create a new profile. Don’t add other mods to it.
+2. Find **RoundsP2P** (ROUNDS P2P Mode) in the available mods list and install it. The required **BepInExPack_ROUNDS 5.4.1901** will be installed automatically.
+3. Make sure you both have the same mod version.
+4. Start Steam, then launch the modded game through your mod manager.
 
 Once you’re both in the game, one of you picks **Online → Create lobby → Invite friend**. The other accepts the Steam invite, and you’re ready to play.
 

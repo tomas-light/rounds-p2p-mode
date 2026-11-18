@@ -1,8 +1,8 @@
 {
-  "name": "RoundsP2PPrototype",
+  "name": "RoundsP2P",
   "version_number": "1.0.0",
-  "website_url": "",
-  "description": "Standalone ROUNDS Steam lobby and network prototype with a server on one player's PC.",
+  "website_url": "https://github.com/tomas-light/rounds-p2p-mode",
+  "description": "Peer-to-peer 1v1 for ROUNDS with Steam lobbies, ping display, a win counter and rematch fixes. Both players need the mod.",
   "dependencies": [
     "BepInEx-BepInExPack_ROUNDS-5.4.1901"
   ]

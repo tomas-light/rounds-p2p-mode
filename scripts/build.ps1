@@ -28,7 +28,7 @@ try {
     elseif ($SteamTests) { Write-Output 'All tests were skipped by -SkipTests; requested Steam SDK tests were not run.' }
     $manifestPath = Join-Path $root 'thunderstore\manifest.json'
     $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-    if ($manifest.name -ne 'RoundsP2PPrototype' -or $manifest.version_number -ne '1.0.0') { throw 'Unexpected prototype package identity.' }
+    if ($manifest.name -ne 'RoundsP2P' -or $manifest.version_number -ne '1.0.0') { throw 'Unexpected package identity.' }
     $artifactDirectory = Join-Path $root 'artifacts'
     $staging = Join-Path $artifactDirectory ('package-' + [Guid]::NewGuid().ToString('N'))
     $pluginDirectory = Join-Path $staging 'BepInEx\plugins\RoundsP2P'
