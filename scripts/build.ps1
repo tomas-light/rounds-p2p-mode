@@ -28,7 +28,7 @@ try {
     elseif ($SteamTests) { Write-Output 'All tests were skipped by -SkipTests; requested Steam SDK tests were not run.' }
     $manifestPath = Join-Path $root 'thunderstore\manifest.json'
     $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json
-    if ($manifest.name -ne 'RoundsP2PPrototype' -or $manifest.version_number -ne '0.2.3') { throw 'Unexpected prototype package identity.' }
+    if ($manifest.name -ne 'RoundsP2PPrototype' -or $manifest.version_number -ne '1.0.0') { throw 'Unexpected prototype package identity.' }
     $artifactDirectory = Join-Path $root 'artifacts'
     $staging = Join-Path $artifactDirectory ('package-' + [Guid]::NewGuid().ToString('N'))
     $pluginDirectory = Join-Path $staging 'BepInEx\plugins\RoundsP2P'
@@ -41,6 +41,7 @@ try {
     Copy-Item -LiteralPath (Join-Path $root 'thunderstore\icon.png') -Destination $staging
     Copy-Item -LiteralPath (Join-Path $root 'thunderstore\README.md') -Destination $staging
     Copy-Item -LiteralPath (Join-Path $root 'THIRD-PARTY-NOTICES.md') -Destination $staging
+    Copy-Item -LiteralPath (Join-Path $root 'LICENSE') -Destination $staging
     $packagePath = Join-Path $artifactDirectory ($manifest.name + '-' + $manifest.version_number + '.zip')
     Compress-Archive -Path (Join-Path $staging '*') -DestinationPath $packagePath -Force
     if (-not $SkipTests) {

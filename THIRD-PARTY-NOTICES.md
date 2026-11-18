@@ -1,5 +1,7 @@
 # Third-party notices
 
+ROUNDS P2P Mode is licensed under the MIT license; see `LICENSE`. The components below retain their own licenses.
+
 The prototype package includes **Luxon Server v1.5**, an independent Photon-compatible server by the Luxon Server contributors, under the BSD 3-Clause license.
 
 - Upstream: https://github.com/niansa/LuxonServer

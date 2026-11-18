@@ -15,7 +15,7 @@ using UnityEngine;
 
 namespace RoundsP2P.Plugin;
 
-[BepInPlugin(Id, "ROUNDS P2P Prototype", "0.2.3")]
+[BepInPlugin(Id, "ROUNDS P2P Prototype", "1.0.0")]
 public sealed partial class Plugin : BaseUnityPlugin
 {
     public const string Id = "local.rounds.p2p.prototype";
